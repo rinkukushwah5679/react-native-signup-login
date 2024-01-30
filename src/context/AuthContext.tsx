@@ -13,11 +13,14 @@ export const AuthProvider = ({ children }) => {
 
   const register = (email, password) => {
   	setIsLoading(true);
-    axios.post(`${BASE_URL}/users/sign_up`, {
-      email, password
+    axios.post(`${BASE_URL}/api/v1//sign_up`, {
+			user: {
+			  email: email,
+			  password: password
+			}
     })
       .then(res => {
-        let userInfo = res.data;
+        let userInfo = res.data.user;
         setUserInfo(userInfo);
 	      AsyncStorage.setItem('userInfo', JSON.stringify(userInfo));
 	      setIsLoading(false);
@@ -31,19 +34,20 @@ export const AuthProvider = ({ children }) => {
 
   const login = (email, password) => {
   	setIsLoading(true);
-  	axios
-  	.post(`${BASE_URL}/users/login`, {
-      email, password
+  	axios.post(`${BASE_URL}/api/v1//sign_in`, {
+			user: {
+			  email: email,
+			  password: password
+			}
     })
-    .then(res => {
-      let userInfo = res.data;
-      console.log(userInfo);
+    .then(response => {
+      let userInfo = response.data;
       setUserInfo(userInfo);
       AsyncStorage.setItem('userInfo', JSON.stringify(userInfo));
       setIsLoading(false);
     })
     .catch(e => {
-      console.log(`Login error ${e}`);
+      console.log(`==================Login error ${e}`);
       setIsLoading(false);
     });
   };
@@ -51,13 +55,16 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
   	setIsLoading(true);
   	axios
-  	.post(`${BASE_URL}/users/logout`, {
-      },
-      {headers:  {Authorization: `Bearer ${userInfo.authentication_token}`},
-      },
-      )
+    .delete(
+      `${BASE_URL}/api/v1/sign_out`,
+      {
+        headers: {
+          'User-Token': `${userInfo.data.user.authentication_token}`,
+        },
+      }
+    )
     .then(res => {
-      let userInfo = res.data;
+      let userInfo = null;
       console.log(userInfo);
       setUserInfo(userInfo);
       AsyncStorage.setItem('userInfo', JSON.stringify(userInfo));

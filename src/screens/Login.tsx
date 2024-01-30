@@ -31,7 +31,7 @@ const LoginScreen = (props) => {
 					<Button title="Login" onPress={() => {login(email, password)}} />
 					<View style={{ flexDirection: 'row', marginTop: 20 }} >
 							<Text>Don't have an account ?</Text>
-							<TouchableOpacity onPress={() => props.navigation.navigate("Register")} >
+							<TouchableOpacity onPress={() => props.navigation.navigate("Registration")} >
 								<Text style={styles.link} >Signup</Text>
 							</TouchableOpacity>
 					</View>

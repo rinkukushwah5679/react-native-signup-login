@@ -19,7 +19,7 @@ const Navigation = () => {
       <Stack.Navigator>
       {splashLoading ? (
         <Stack.Screen name="SplashScreen" component={SplashScreen} options={{headerShown: false}} />
-        ) : userInfo != ""  ? (
+        ) : userInfo != null  ? (
           <Stack.Screen name="Home" component={Home} />
           ) : (
           <>
