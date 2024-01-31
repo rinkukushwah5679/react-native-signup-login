@@ -3,6 +3,7 @@ import {View, Text} from 'react-native'
 import Home from '../screens/Home'
 import Login from '../screens/Login'
 import Signup from '../screens/Signup'
+import PostView from '../screens/PostView';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import {AuthContext} from "../context/AuthContext"
@@ -20,7 +21,10 @@ const Navigation = () => {
       {splashLoading ? (
         <Stack.Screen name="SplashScreen" component={SplashScreen} options={{headerShown: false}} />
         ) : userInfo != null  ? (
-          <Stack.Screen name="Home" component={Home} />
+          <>
+            <Stack.Screen name="Home" component={Home} />
+            <Stack.Screen name="PostView" component={PostView} />
+          </>
           ) : (
           <>
             <Stack.Screen name="Login" component={Login} options={{headerShown: false}} />

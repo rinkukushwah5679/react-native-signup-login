@@ -2,7 +2,7 @@ import React, { createContext, useState, useEffect } from 'react';
 import { BASE_URL } from "../config";
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { showMessage, hideMessage } from "react-native-flash-message";
+import { showMessage, hideMessage, FlashMessage } from "react-native-flash-message";
 
 export const AuthContext = createContext();
 
@@ -20,11 +20,11 @@ export const AuthProvider = ({ children }) => {
 			}
     })
       .then(res => {
-        let userInfo = res.data.user;
+        let userInfo = res.data;
+        console.log(`*********************** ${res}`);
         setUserInfo(userInfo);
 	      AsyncStorage.setItem('userInfo', JSON.stringify(userInfo));
 	      setIsLoading(false);
-        console.log(userInfo);
       })
       .catch(e => {
         console.log(`register error ${e}`);
@@ -34,20 +34,43 @@ export const AuthProvider = ({ children }) => {
 
   const login = (email, password) => {
   	setIsLoading(true);
-  	axios.post(`${BASE_URL}/api/v1//sign_in`, {
+  	axios.post(`${BASE_URL}/api/v1/sign_in`, {
 			user: {
 			  email: email,
 			  password: password
 			}
     })
     .then(response => {
-      let userInfo = response.data;
-      setUserInfo(userInfo);
-      AsyncStorage.setItem('userInfo', JSON.stringify(userInfo));
-      setIsLoading(false);
+    	console.warn(`****== ${JSON.stringify(response.data.message)}`)
+    	if (response.data.status == 401) {
+        console.log('AUTHENTICATION ERROR!!')
+        showMessage({
+          message: "FAILED!",
+          description: response.data.message,
+          type: "danger",
+        	duration: 9000,
+        });
+      } else {
+	      let userInfo = response.data;
+      	console.warn(`======== ${JSON.stringify(userInfo.message)}`)
+	      setUserInfo(userInfo);
+	      showMessage({
+          message: "SUCCESS!",
+          description: userInfo.message,
+          type: "success",
+        	duration: 3000,
+        });
+	      AsyncStorage.setItem('userInfo', JSON.stringify(userInfo));
+	      setIsLoading(false);
+	    }
     })
     .catch(e => {
-      console.log(`==================Login error ${e}`);
+    	showMessage({
+        message: "Login failed. Please check your credentials and try again.",
+        description: "Testing",
+        type: "danger",
+      });
+      console.log(`==========* Login error ${e}`);
       setIsLoading(false);
     });
   };
@@ -64,7 +87,8 @@ export const AuthProvider = ({ children }) => {
       }
     )
     .then(res => {
-      let userInfo = null;
+      let userInfo = res.data.data;
+      console.warn(`@@@@@@@@ ${JSON.stringify(userInfo)}`)
       console.log(userInfo);
       setUserInfo(userInfo);
       AsyncStorage.setItem('userInfo', JSON.stringify(userInfo));
@@ -80,6 +104,7 @@ export const AuthProvider = ({ children }) => {
   	try{
   		setSplashLoading(true);
   		let userInfo  = await AsyncStorage.getItem('userInfo');
+  		console.warn(`AAAAAAAA ${JSON.stringify(userInfo)}`)
   		userInfo = JSON.parse(userInfo);
   		if (userInfo) {
   			setUserInfo(userInfo);

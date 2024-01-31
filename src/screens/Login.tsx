@@ -2,6 +2,7 @@ import React, {useState,useContext,useEffect }from 'react'
 import {View, Text, TextInput, Button, TouchableOpacity, StyleSheet} from 'react-native'
 import {AuthContext} from "../context/AuthContext"
 import Spinner from "react-native-loading-spinner-overlay"
+import { showMessage, hideMessage, FlashMessage } from "react-native-flash-message";
 
 const LoginScreen = (props) => {
 
@@ -12,7 +13,7 @@ const LoginScreen = (props) => {
 	return (
 		<View style={styles.container}>
 				<Text style={styles.logins}>Login</Text>
-			<Spinner visible={isLoading} />
+			{/*<Spinner visible={isLoading} />*/}
 				<View style={styles.wraper}>
 					<TextInput 
 						value={email} 
@@ -28,7 +29,12 @@ const LoginScreen = (props) => {
 						secureTextEntry 
 					/>
 
-					<Button title="Login" onPress={() => {login(email, password)}} />
+					<Button
+						title="Login" 
+						onPress={() => {
+							login(email, password);
+							
+						}} />
 					<View style={{ flexDirection: 'row', marginTop: 20 }} >
 							<Text>Don't have an account ?</Text>
 							<TouchableOpacity onPress={() => props.navigation.navigate("Registration")} >
