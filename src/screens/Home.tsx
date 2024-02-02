@@ -52,7 +52,7 @@ const Home = (props) => {
         <Spinner visible={isLoading} />
         {userInfo ? (
           <>
-            <Text>{console.warn(`** ${JSON.stringify(userInfo)}`)}Welcome </Text>
+            <Text>{console.warn(`*** ${JSON.stringify(userInfo)}`)} Welcome </Text>
             <Button title="Logout" color="red" onPress={logout} />
             
           </>

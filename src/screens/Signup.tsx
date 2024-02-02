@@ -13,7 +13,7 @@ const Signup = (props) => {
 	return (
 		<View style={styles.container}>
 		 <Text style={styles.logins}>Registration</Text>
-		<Spinner  visible={isLoading} />
+		<Spinner  visible={false} />
 			<View style={styles.wraper}>
 				<TextInput 
 					value={email} 

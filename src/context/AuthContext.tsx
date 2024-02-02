@@ -7,7 +7,7 @@ import { showMessage, hideMessage, FlashMessage } from "react-native-flash-messa
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-	const [userInfo, setUserInfo] = useState({});
+	const [userInfo, setUserInfo] = useState(null);
 	const [isLoading, setIsLoading] = useState(false);
 	const [splashLoading, setSplashLoading] = useState(false);
 
@@ -19,15 +19,32 @@ export const AuthProvider = ({ children }) => {
 			  password: password
 			}
     })
-      .then(res => {
-        let userInfo = res.data;
-        console.log(`*********************** ${res}`);
-        setUserInfo(userInfo);
-	      AsyncStorage.setItem('userInfo', JSON.stringify(userInfo));
-	      setIsLoading(false);
+      .then(response => {
+      	if (response.data.status == 401) {
+	        console.log(response.data)
+          setIsLoading(false);
+	        showMessage({
+	          message: "FAILED!",
+	          description: response.data.data.errors,
+	          type: "danger",
+	        	duration: 9000,
+	        });
+	      } else {
+	        let userInfo = response.data;
+	        console.log(`*********************** ${response}`);
+	        setUserInfo(userInfo);
+		      AsyncStorage.setItem('userInfo', JSON.stringify(userInfo));
+		      setIsLoading(false);
+		    }
       })
       .catch(e => {
         console.log(`register error ${e}`);
+        showMessage({
+          message: "FAILED!",
+          description: `${e.message}`,
+          type: "danger",
+          duration: 9000,
+        });
         setIsLoading(false);
       });
   };
@@ -41,9 +58,9 @@ export const AuthProvider = ({ children }) => {
 			}
     })
     .then(response => {
-    	console.warn(`****== ${JSON.stringify(response.data.message)}`)
     	if (response.data.status == 401) {
         console.log('AUTHENTICATION ERROR!!')
+        setIsLoading(true);
         showMessage({
           message: "FAILED!",
           description: response.data.message,
@@ -52,7 +69,6 @@ export const AuthProvider = ({ children }) => {
         });
       } else {
 	      let userInfo = response.data;
-      	console.warn(`======== ${JSON.stringify(userInfo.message)}`)
 	      setUserInfo(userInfo);
 	      showMessage({
           message: "SUCCESS!",
@@ -88,7 +104,6 @@ export const AuthProvider = ({ children }) => {
     )
     .then(res => {
       let userInfo = res.data.data;
-      console.warn(`@@@@@@@@ ${JSON.stringify(userInfo)}`)
       console.log(userInfo);
       setUserInfo(userInfo);
       AsyncStorage.setItem('userInfo', JSON.stringify(userInfo));
@@ -104,7 +119,7 @@ export const AuthProvider = ({ children }) => {
   	try{
   		setSplashLoading(true);
   		let userInfo  = await AsyncStorage.getItem('userInfo');
-  		console.warn(`AAAAAAAA ${JSON.stringify(userInfo)}`)
+      console.warn(`AAAAAAAA ${JSON.stringify(userInfo)}`)
   		userInfo = JSON.parse(userInfo);
   		if (userInfo) {
   			setUserInfo(userInfo);
