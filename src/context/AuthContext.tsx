@@ -60,7 +60,7 @@ export const AuthProvider = ({ children }) => {
     .then(response => {
     	if (response.data.status == 401) {
         console.log('AUTHENTICATION ERROR!!')
-        setIsLoading(true);
+        setIsLoading(false);
         showMessage({
           message: "FAILED!",
           description: response.data.message,

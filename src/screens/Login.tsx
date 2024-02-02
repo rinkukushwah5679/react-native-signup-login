@@ -13,7 +13,7 @@ const LoginScreen = (props) => {
 	return (
 		<View style={styles.container}>
 				<Text style={styles.logins}>Login</Text>
-			{/*<Spinner visible={isLoading} />*/}
+			<Spinner visible={isLoading} />
 				<View style={styles.wraper}>
 					<TextInput 
 						value={email} 
